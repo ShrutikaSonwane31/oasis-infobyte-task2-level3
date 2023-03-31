@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>To Do List</title>
+    <link rel="stylesheet" href="todo_style.css">
+</head>
+<body>
+    <div class="container">
+    <h1 class="title">To Do List</h1>
+    <form id="task-form">
+        <input type="text" placeholder="Add task" id="new-task">
+        <button type="submit">Add Task</button> 
+    </form>
+    <ul id="task-list">
+    </ul>
+    <hr class="hr">
+    <h2 class="compl_task">Completed Tasks</h2>
+    <ul id="completed-tasks-list">
+    </ul>
+</div>
+  
+
+
+<script>
+const taskForm = document.querySelector("#task-form");
+const taskList = document.querySelector("#task-list");
+const completedTasksList = document.querySelector("#completed-tasks-list");
+let tasks = [];
+
+function addTask(event) {
+    event.preventDefault();
+    const newTaskInput = document.querySelector("#new-task");
+    const newTask = newTaskInput.value.trim();
+    if(newTask === "") return;
+    tasks.push({ name: newTask, completed: false});
+    renderTasks();
+    newTaskInput.value = "";
+}
+
+function completeTask(event) {
+    const index = event.target.dataset.index;
+    tasks[index].completed = true;
+    renderTasks();
+}
+
+function deleteTask(event) {
+    const index = event.target.dataset.index;
+    tasks.splice(index,1);
+    renderTasks();
+}
+function renderTasks() {
+    taskList.innerHTML = "";
+    completedTasksList.innerHTML = "";
+    tasks.forEach((task,index) =>  {
+        const taskItem = document.createElement("li");
+        const taskName = document.createElement("span");
+        const deleteButton = document.createElement("button");
+        const completeButton = document.createElement("button");
+
+        taskName.classList.add("task");
+        taskName.textContent = task.name;
+
+        deleteButton.classList.add("delete");
+        deleteButton.textContent = "Delete";
+        deleteButton.dataset.index = index;
+
+        completeButton.classList.add("complete");
+        completeButton.textContent = "Complete";
+        completeButton.dataset.index = index;
+
+        taskItem.appendChild(taskName);
+        taskItem.appendChild(deleteButton);
+
+        if(task.completed) {
+            completedTaskList.appendChild(taskItem);
+        } else {
+            taskItem.appendChild(completeButton);
+            taskList.appendChild(taskItem);
+        }
+
+        deleteButton.addEventListener("click",deleteTask);
+        completeButton.addEventListener("click",completeTask);
+    });
+    
+}
+taskForm.addEventListener("submit",addTask);
+    
+
+   
+  
+    </script> 
+</body>
+</html>
